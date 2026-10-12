@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/prisma_generated"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  email    String  @unique
+  name     String?
+  password String
+
+  build Build[]
+  likes Like[]
+}
+
+model Build {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  name       String
+  price      Int              @default(0)
+  isPublic   Boolean          @default(false)
+  likes      Like[]
+  components BuildComponent[]
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Component {
+  id String @id @default(cuid())
+
+  name   String
+  type   ComponentType
+  price  Int
+  socket String?
+
+  buildComponents BuildComponent[]
+}
+
+model BuildComponent {
+  id String @id @default(cuid())
+
+  buildId String
+  build   Build  @relation(fields: [buildId], references: [id], onDelete: Cascade)
+
+  componentId String
+  component   Component @relation(fields: [componentId], references: [id], onDelete: Cascade)
+
+  @@unique([buildId, componentId])
+}
+
+model Like {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  buildId String
+  build   Build  @relation(fields: [buildId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, buildId])
+}
+
+enum ComponentType {
+  cpu
+  gpu
+  ram
+  ssd
+  motherboard
+  psu
+  case
+  cooler
+}
