@@ -14,7 +14,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={cn("h-full antialiased", "font-sans", inter.variable)}
+      className={cn("h-full antialiased", "font-sans", inter.variable, "dark")}
     >
       <body>{children}</body>
     </html>
