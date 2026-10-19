@@ -31,5 +31,5 @@ export async function loginAction(
       return { error: "Invalid email or password" };
     } else return { error: "Unknown error" };
   }
-  redirect("/");
+  redirect("/dashboard");
 }
