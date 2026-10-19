@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { signIn } from "@/auth";
+import { AuthError } from "next-auth";
 
 export type LoginState = {
   error?: string;
@@ -26,8 +27,9 @@ export async function loginAction(
   try {
     await signIn("credentials", { email, password, redirect: false });
   } catch (error) {
-    console.log(error);
-    return { error: "Invalid email or password" };
+    if (error instanceof AuthError && error.type === "CredentialsSignin") {
+      return { error: "Invalid email or password" };
+    } else return { error: "Unknown error" };
   }
   redirect("/");
 }
