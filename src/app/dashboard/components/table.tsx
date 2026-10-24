@@ -6,6 +6,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -13,13 +14,15 @@ import {
 import { categories, iconMap } from "@/lib/const";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { AddComponentDialog } from "./add-component-dialog";
+import { formatPrice } from "@/lib/utils";
 
 export function TableParts({
   selected,
   onSelected,
 }: {
   selected: Record<string, Component | null>;
-  onSelected: (category: string, component: Component | null) => void;
+  onSelected: (categoryId: string, component: Component | null) => void;
 }) {
   const [openCategory, setOpenCategory] = useState<string | null>(null);
 
@@ -52,7 +55,11 @@ export function TableParts({
               </TableCell>
               <TableCell className="font-bold">{category.name}</TableCell>
               <TableCell>{selectedCategory?.name ?? "-"}</TableCell>
-              <TableCell>{selectedCategory?.price ?? "-"}</TableCell>
+              <TableCell>
+                {selectedCategory?.price
+                  ? formatPrice(selectedCategory.price)
+                  : "-"}
+              </TableCell>
               <TableCell className="text-right">
                 <Dialog
                   open={openCategory === category.id}
@@ -65,12 +72,30 @@ export function TableParts({
                       {selectedCategory ? "Edit" : "Add"}
                     </Button>
                   </DialogTrigger>
+                  <AddComponentDialog
+                    categoryId={category.id}
+                    categoryName={category.name}
+                    onSelect={(component) => {
+                      onSelected(category.id, component);
+                      setOpenCategory(null);
+                    }}
+                  />
                 </Dialog>
               </TableCell>
             </TableRow>
           );
         })}
       </TableBody>
+      <TableFooter>
+        <TableRow>
+          <TableCell colSpan={5}>
+            <p className="font-medium">Total price:</p>
+            <p className="text-lg text-gray-500">
+              {formatPrice(totalPrice)}
+            </p>
+          </TableCell>
+        </TableRow>
+      </TableFooter>
     </Table>
   );
 }
