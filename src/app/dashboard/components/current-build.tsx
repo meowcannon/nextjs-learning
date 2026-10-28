@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import type { Component } from "@/lib/types";
 import { useCallback, useState } from "react";
 import { TableParts } from "./table";
+import { SaveBuildDialog } from "./save-build-dialog";
 
 export function CurrentBuild() {
   const [selected, setSelected] = useState<Record<string, Component | null>>({});
@@ -24,6 +25,11 @@ export function CurrentBuild() {
       </div>
       <div className="min-w-0 overflow-x-auto">
         <TableParts selected={selected} onSelected={onSelected} />
+        <SaveBuildDialog
+          open={dialogOpen}
+          onOpenChange={setDialogOpen}
+          selected={selected}
+        />
       </div>
     </>
   );

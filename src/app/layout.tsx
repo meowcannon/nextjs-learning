@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { auth } from "@/auth";
 import { Navbar } from "@/components/navbar";
 import { Suspense } from "react";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <NavbarAuth />
         </Suspense>
         {children}
+        <Toaster position="top-center" />
       </body>
     </html>
   );
