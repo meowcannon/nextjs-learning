@@ -1,9 +1,9 @@
 "use client";
 
 import { Component } from "@/lib/types";
-import { saveBuildAction } from "../actions";
+import { saveBuildAction, SaveBuildState } from "../actions";
 import { useRouter } from "next/navigation";
-import { useActionState, useEffect, useMemo, useRef } from "react";
+import { useActionState, useMemo, useRef } from "react";
 import {
   Dialog,
   DialogContent,
@@ -31,9 +31,6 @@ export function SaveBuildDialog({
 }) {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
-  const [state, formAction, isPending] = useActionState(saveBuildAction, {
-    status: null,
-  });
 
   const componentIds = useMemo(
     () =>
@@ -44,20 +41,26 @@ export function SaveBuildDialog({
     [selected],
   );
 
-  useEffect(() => {
-    if (state.status === "success") {
-      toast.success("Build saved");
-      formRef.current?.reset();
-      onOpenChange(false);
-      state.status = null;
+  const handleAction = async (prev: SaveBuildState, formData: FormData) => {
+    const result = await saveBuildAction(prev, formData);
 
-      if (redirectPath) {
-        router.push(redirectPath);
-      } else {
-        router.refresh();
-      }
+    if (result.status !== "success") {
+      toast.error("Failed to save the build");
+      return result;
     }
-  }, [state.status, onOpenChange, redirectPath, router]);
+
+    toast.success("Build saved");
+    formRef.current?.reset();
+    onOpenChange(false);
+    if (redirectPath) router.push(redirectPath);
+    else router.refresh();
+
+    return result;
+  };
+
+  const [_, formAction, isPending] = useActionState(handleAction, {
+    status: null,
+  });
 
   const handleOpenChange = (nextOpen: boolean) => {
     if (!nextOpen) formRef.current?.reset();

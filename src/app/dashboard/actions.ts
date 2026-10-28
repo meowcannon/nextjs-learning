@@ -23,7 +23,7 @@ export async function getComponents(categoryId: string): Promise<Component[]> {
 }
 
 export async function saveBuildAction(
-  _prev: SaveBuildState,
+  _prevState: SaveBuildState,
   formData: FormData,
 ): Promise<SaveBuildState> {
   const session = await auth();
