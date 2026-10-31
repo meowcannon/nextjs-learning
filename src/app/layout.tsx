@@ -33,7 +33,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Suspense fallback={<Navbar />}>
           <NavbarAuth />
         </Suspense>
-        {children}
+        <div className="container mx-auto max-w-5xl mt-8">{children}</div>
         <Toaster position="bottom-center" />
       </body>
     </html>
