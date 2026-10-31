@@ -8,26 +8,14 @@ import { revalidatePath } from "next/cache";
 export type SaveBuildState = {
   status: "success" | "error" | null;
   message?: string;
-  buildId?: string;
 };
-
-export async function getComponents(categoryId: string): Promise<Component[]> {
-  const type = categoryToDatabaseType[categoryId];
-  if (!type) return [];
-
-  return await prisma.component.findMany({
-    where: { type },
-    orderBy: { price: "asc" },
-    select: { id: true, name: true, type: true, price: true, socket: true },
-  });
-}
 
 export async function saveBuildAction(
   _prevState: SaveBuildState,
   formData: FormData,
 ): Promise<SaveBuildState> {
   const session = await auth();
-  if (!session?.user?.id) {
+  if (!session) {
     return {
       status: "error",
       message: "Authentication required",
@@ -70,7 +58,6 @@ export async function saveBuildAction(
     revalidatePath("/builds");
     return {
       status: "success",
-      buildId: build.id,
     };
   } catch (error) {
     console.error("saveBuildAction failed", error);
@@ -79,4 +66,15 @@ export async function saveBuildAction(
       message: "Failed to save",
     };
   }
+}
+
+export async function getComponents(categoryId: string): Promise<Component[]> {
+  const type = categoryToDatabaseType[categoryId];
+  if (!type) return [];
+
+  return await prisma.component.findMany({
+    where: { type },
+    orderBy: { price: "asc" },
+    select: { id: true, name: true, type: true, price: true, socket: true },
+  });
 }
