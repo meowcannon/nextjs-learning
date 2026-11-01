@@ -10,6 +10,8 @@ import {
 import { formatDate, formatPrice } from "@/lib/utils";
 import { Pencil } from "lucide-react";
 import Link from "next/link";
+import { ShareButton } from "./share-button";
+import { DeleteButton } from "./delete-button";
 
 type BuildCard = {
   user: {
@@ -18,6 +20,7 @@ type BuildCard = {
   id: string;
   name: string;
   price: number;
+  isPublic: boolean;
   createdAt: Date;
   components: Array<{
     id: string;
@@ -27,13 +30,7 @@ type BuildCard = {
   }>;
 };
 
-export function BuildCard({
-  build,
-  children,
-}: {
-  build: BuildCard;
-  children?: React.ReactNode;
-}) {
+export function BuildCard({ build }: { build: BuildCard }) {
   return (
     <Card className="flex flex-col">
       <CardHeader className="pb-2 flex items-start justify-between gap-2">
@@ -43,7 +40,8 @@ export function BuildCard({
             {formatDate(build.createdAt)}
           </p>
         </CardTitle>
-        <div className="shrink-0">
+        <div className="flex">
+          <ShareButton buildId={build.id} isPublic={build.isPublic} />
           <Button asChild>
             <Link href={`/builds/${build.id}`}>
               <Pencil className="w-4 h-4" />
@@ -63,7 +61,7 @@ export function BuildCard({
           <span className="text-sky-500 text-lg font-bold">
             {formatPrice(build.price)}
           </span>
-          <div className="flex flex-col gap-2">{children}</div>
+          <DeleteButton buildId={build.id} />
         </CardDescription>
       </CardFooter>
     </Card>
