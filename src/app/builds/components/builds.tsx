@@ -13,7 +13,6 @@ export async function Builds() {
     where: { userId: session.user.id },
     orderBy: { createdAt: "desc" },
     include: {
-      user: { select: { email: true } },
       components: {
         include: {
           component: { select: { name: true, type: true, price: true } },

@@ -14,9 +14,6 @@ import { ShareButton } from "./share-button";
 import { DeleteButton } from "./delete-button";
 
 type BuildCard = {
-  user: {
-    email: string;
-  };
   id: string;
   name: string;
   price: number;
